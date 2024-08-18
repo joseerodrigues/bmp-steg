@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
 #include "cbmp/cbmp.h"
 
 int main(int argc, char **argv)
@@ -13,6 +15,26 @@ int main(int argc, char **argv)
     // Read image into BMP struct
     BMP* bmp = bopen(argv[1]);
 
+    printf("src bit depth: %d\n", bmp->depth);
+
+    BMP* bmp_copy = b_deep_copy(bmp);
+    bmp_copy->depth = 32;
+
+    printf("dst bit depth: %d\n", bmp_copy->depth);
+
+    bmp_copy->width = bmp->width * 2;
+    bmp_copy->height = bmp->height * 2;
+
+
+    bmp_copy->pixels = (pixel*) malloc(bmp_copy->width * bmp_copy->height * sizeof(pixel));
+    memcpy(bmp_copy->pixels, bmp->pixels, bmp->width * bmp->height * sizeof(pixel));
+
+    bmp_copy->file_byte_number = bmp_copy->file_byte_number * 2 + (bmp_copy->width * bmp_copy->height * sizeof(unsigned char));
+    bmp_copy->file_byte_contents = (unsigned char*) malloc(bmp_copy->file_byte_number * sizeof(unsigned char));
+
+    memcpy(bmp_copy->file_byte_contents, bmp->file_byte_contents, bmp->file_byte_number * sizeof(unsigned char));
+
+    /*
     unsigned int x, y, width, height;
     unsigned char r, g, b;
 
@@ -34,11 +56,14 @@ int main(int argc, char **argv)
         }
     }
 
+
+*/
     // Write bmp contents to file
-    bwrite(bmp, argv[2]);
+    bwrite(bmp_copy, argv[2]);
 
     // Free memory
     bclose(bmp);
+    bclose(bmp_copy);
 
     return 0;
 }

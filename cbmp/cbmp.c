@@ -139,7 +139,24 @@ void get_pixel_rgb(BMP* bmp, int x, int y, unsigned char* r, unsigned char* g, u
     *b = bmp->pixels[index].blue;
 }
 
+void get_pixel_rgba(BMP* bmp, int x, int y, unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a)
+{
+    int index = y * bmp->width + x;
+    *r = bmp->pixels[index].red;
+    *g = bmp->pixels[index].green;
+    *b = bmp->pixels[index].blue;
+    *a = bmp->pixels[index].alpha;
+}
+
 void set_pixel_rgb(BMP* bmp, int x, int y, unsigned char r, unsigned char g, unsigned char b)
+{
+    int index = y * bmp->width + x;
+    bmp->pixels[index].red = r;
+    bmp->pixels[index].green = g;
+    bmp->pixels[index].blue = b;
+}
+
+void set_pixel_rgba(BMP* bmp, int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     int index = y * bmp->width + x;
     bmp->pixels[index].red = r;

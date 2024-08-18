@@ -43,7 +43,9 @@ extern "C" {
     int get_height(BMP* bmp);
     unsigned int get_depth(BMP* bmp);
     void get_pixel_rgb(BMP* bmp, int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
+    void get_pixel_rgba(BMP* bmp, int x, int y, unsigned char* r, unsigned char* g, unsigned char* b, unsigned char* a);
     void set_pixel_rgb(BMP* bmp, int x, int y, unsigned char r, unsigned char g, unsigned char b);
+    void set_pixel_rgba(BMP* bmp, int x, int y, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void bwrite(BMP* bmp, char* file_name);
     void bclose(BMP* bmp);
 
