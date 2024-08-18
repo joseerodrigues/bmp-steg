@@ -489,7 +489,7 @@ void BMP_GetPixelRGBA( BMP* bmp, UINT x, UINT y, UCHAR* r, UCHAR* g, UCHAR* b, U
 		}
 
 		/* Note: colors are stored in BGR order */
-		if ( a )	*r = *( pixel + 3 );
+		if ( a )	*a = *( pixel + 3 );
 		if ( r )	*r = *( pixel + 2 );
 		if ( g )	*g = *( pixel + 1 );
 		if ( b )	*b = *( pixel + 0 );

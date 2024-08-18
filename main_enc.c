@@ -116,8 +116,8 @@ int main(int argc, char **argv)
     }
 
     //
-    //BMP_SetPixelRGB( dst_bmp, 0, 0, 255, 253, 123); //7B FD FF // 0042A440
-    //BMP_SetPixelRGB( dst_bmp, 1, 0, 255, 0, 0); // 00 00 FF
+    BMP_SetPixelRGB( dst_bmp, 0, 0, 255, 253, 123); //7B FD FF // 0042A440
+    BMP_SetPixelRGB( dst_bmp, 1, 0, 255, 0, 0); // 00 00 FF
     //
 
     /* Save result */
