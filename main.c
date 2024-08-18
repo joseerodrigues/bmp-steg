@@ -2,68 +2,86 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cbmp/cbmp.h"
+#include "qdbmp/qdbmp.h"
 
 int main(int argc, char **argv)
 {
     if (argc != 3)
     {
-        fprintf(stderr, "Usage: %s <input file> <output file>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <input file> <output file> <secret file>\n", argv[0]);
         exit(1);
     }
 
-    // Read image into BMP struct
-    BMP* bmp = bopen(argv[1]);
+    BMP*    bmp;
+    BMP*    dst_bmp;
+    UCHAR   r, g, b;
+    UINT    src_width, src_height, src_depth;
+    UINT    dst_width, dst_height, dst_depth;
+    UINT    x, y;
 
-    printf("src bit depth: %d\n", bmp->depth);
+    /* Read an image file */
+    bmp = BMP_ReadFile( argv[ 1 ] );
+    BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
-    BMP* bmp_copy = b_deep_copy(bmp);
-    bmp_copy->depth = 32;
+    /* Get image's dimensions */
+    src_width = BMP_GetWidth( bmp );
+    src_height = BMP_GetHeight( bmp );
+    src_depth = BMP_GetDepth( bmp );
 
-    printf("dst bit depth: %d\n", bmp_copy->depth);
+    printf("src_width = %d, ", src_width);
+    printf("src_height = %d, ", src_height);
+    printf("src_depth = %d\n", src_depth);
 
-    bmp_copy->width = bmp->width * 2;
-    bmp_copy->height = bmp->height * 2;
+    dst_bmp = BMP_Create(src_width * 2, src_height * 2, 32);
+    BMP_CHECK_ERROR( stderr, -1 );
 
+    dst_width = BMP_GetWidth( dst_bmp );
+    dst_height = BMP_GetHeight( dst_bmp );
+    dst_depth = BMP_GetDepth( dst_bmp );
 
-    bmp_copy->pixels = (pixel*) malloc(bmp_copy->width * bmp_copy->height * sizeof(pixel));
-    memcpy(bmp_copy->pixels, bmp->pixels, bmp->width * bmp->height * sizeof(pixel));
+    printf("dst_width = %d, ", dst_width);
+    printf("dst_height = %d, ", dst_height);
+    printf("dst_depth = %d\n", dst_depth);
 
-    bmp_copy->file_byte_number = bmp_copy->file_byte_number * 2 + (bmp_copy->width * bmp_copy->height * sizeof(unsigned char));
-    bmp_copy->file_byte_contents = (unsigned char*) malloc(bmp_copy->file_byte_number * sizeof(unsigned char));
+    int dst_capacity = dst_width * dst_height;
+    printf("capacity = %d\n", dst_capacity);
 
-    memcpy(bmp_copy->file_byte_contents, bmp->file_byte_contents, bmp->file_byte_number * sizeof(unsigned char));
-
-    /*
-    unsigned int x, y, width, height;
-    unsigned char r, g, b;
-
-    // Gets image width in pixels
-    width = get_width(bmp);
-
-    // Gets image height in pixels
-    height = get_height(bmp);
-
-    for (x = 0; x < width; x++)
+    /* Iterate through all the image's pixels */
+    for ( x = 0 ; x < src_width ; ++x )
     {
-        for (y = 0; y < height; y++)
+        for ( y = 0 ; y < src_height ; ++y )
         {
-            // Gets pixel rgb values at point (x, y)
-            get_pixel_rgb(bmp, x, y, &r, &g, &b);
+            /* Get pixel's RGB values */
+            BMP_GetPixelRGB( bmp, x, y, &r, &g, &b );
 
-            // Sets pixel rgb values at point (x, y)
-            set_pixel_rgb(bmp, x, y, 255 - r, 255 - g, 255 - b);
+            /* Invert RGB values */
+            BMP_SetPixelRGB( dst_bmp, x, y, r, g, b);
         }
     }
 
+    for ( x = 0 ; x < dst_width ; ++x )
+    {
+        for ( y = 0 ; y < dst_height ; ++y )
+        {
+            /* Get pixel's RGB values */
+            BMP_GetPixelRGB( dst_bmp, x, y, &r, &g, &b );
 
-*/
-    // Write bmp contents to file
-    bwrite(bmp_copy, argv[2]);
+            /* Invert RGB values */
+            BMP_SetPixelRGBA( dst_bmp, x, y, r, g, b, 'g');
+        }
+    }
 
-    // Free memory
-    bclose(bmp);
-    bclose(bmp_copy);
+    //
+ //   BMP_SetPixelRGB( bmp_copy, 0, 0, 255, 253, 123); //7B FD FF // 0042A440
+  //  BMP_SetPixelRGB( bmp_copy, 1, 0, 255, 0, 0); // 00 00 FF
+    //
 
+    /* Save result */
+    BMP_WriteFile( dst_bmp, argv[ 2 ] );
+    BMP_CHECK_ERROR( stderr, -2 );
+
+    /* Free all memory allocated for the image */
+    BMP_Free( bmp );
+    BMP_Free( dst_bmp );
     return 0;
 }
