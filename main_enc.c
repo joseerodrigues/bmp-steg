@@ -69,7 +69,7 @@ int main(int argc, char **argv)
         while (secret_size > (src_capacity * multiplier)) {
             multiplier += 2;
         }
-        tile_count = 2;
+        tile_count = multiplier;
     }
     printf("tile_count = %d\n", tile_count);
 
