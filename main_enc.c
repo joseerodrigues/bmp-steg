@@ -100,7 +100,6 @@ int main(int argc, char **argv)
                     /* Get pixel's RGB values */
                     BMP_GetPixelRGB( bmp, x, y, &r, &g, &b );
 
-                    /* Invert RGB values */
                     int new_x = x + (x_tile_i * src_width);
                     int new_y = y + (y_tile_i * src_height);
                     UCHAR a = 0;

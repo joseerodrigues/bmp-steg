@@ -12,9 +12,8 @@ int main(int argc, char **argv) {
 
     BMP *bmp;
     UCHAR r, g, b, a;
-    UINT src_width, src_height, src_depth;
+    UINT src_depth;
     UINT dst_width, dst_height, dst_depth;
-    UINT x, y;
 
     char *src_filename = argv[1];
     char *dst_filename = argv[2];
@@ -24,11 +23,11 @@ int main(int argc, char **argv) {
     BMP_CHECK_ERROR(stderr, -1); /* If an error has occurred, notify and exit */
 
     /* Get image's dimensions */
-    src_width = BMP_GetWidth(bmp);
-    src_height = BMP_GetHeight(bmp);
+    UINT src_width = BMP_GetWidth(bmp);
+    UINT src_height = BMP_GetHeight(bmp);
 
-    for (x = 0; x < src_width; ++x) {
-        for (y = 0; y < src_height; ++y) {
+    for (UINT x = 0; x < src_width; ++x) {
+        for (UINT y = 0; y < src_height; ++y) {
             /* Get pixel's RGB values */
             BMP_GetPixelRGBA(bmp, x, y, &r, &g, &b, &a);
 
